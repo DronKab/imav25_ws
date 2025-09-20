@@ -1,0 +1,53 @@
+# ROS2 workspace
+/build/
+ /install/
+ /log/
+
+# VSCode
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.egg-info/
+
+# CMake / colcon
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+compile_commands.json
+*.obj
+*.o
+*.so
+*.a
+*.lo
+*.la
+*.dll
+*.exe
+*.out
+
+# IDEs
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# macOS
+.DS_Store
+
+# ROS2 specific
+*.pyc
+*.launch.pyc
+
+#carpeta
+#x4_msgs/
+log/
+
+build/
+install/
+log/
+*.pyc
+__pycache__/
