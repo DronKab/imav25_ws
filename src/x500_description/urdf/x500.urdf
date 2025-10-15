@@ -18,28 +18,35 @@
 </link>
 
   <!-- LIDAR -->
-  <link name="lidar_link">
-    <inertial>
-      <origin xyz="0 0 0.435" rpy="0 0 0"/>
-      <mass value="0.37"/>
-      <inertia ixx="0.000344" ixy="0.0" ixz="0.0" iyy="0.000344" iyz="0.0" izz="0.000222"/>
-    </inertial>
-  </link>
+<link name="lidar_link">
+  <inertial>
+    <origin xyz="0 0 0.435" rpy="0 0 0"/>
+    <mass value="0.37"/>
+    <inertia ixx="0.000344" ixy="0.0" ixz="0.0" iyy="0.000344" iyz="0.0" izz="0.000222"/>
+  </inertial>
+</link>
 
-  <joint name="lidar_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="lidar_link"/>
-    <!-- en el SDF estaba: -.1 0 .26 -->
-    <origin xyz="-0.1 0 0.26" rpy="0 0 0"/>
-  </joint>
+<joint name="lidar_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="lidar_link"/>
+  <origin xyz="-0.1 0 0.26" rpy="0 0 0"/>
+</joint>
 
-  <!-- Frame del sensor dentro del lidar -->
-  <link name="lidar_2d_v2"/>
-  <joint name="lidar_2d_v2_joint" type="fixed">
-    <parent link="lidar_link"/>
-    <child link="lidar_2d_v2"/>
-    <origin xyz="0 0 0.105" rpy="0 0 0"/>
-  </joint>
+<!-- Frame del sensor dentro del lidar -->
+<link name="lidar_2d_v2">
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <box size="0.001 0.001 0.001"/>
+    </geometry>
+  </visual>
+</link>
+
+<joint name="lidar_2d_v2_joint" type="fixed">
+  <parent link="lidar_link"/>
+  <child link="lidar_2d_v2"/>
+  <origin xyz="0 0 0.105" rpy="0 0 0"/>
+</joint>
 
   <!-- Rotor 0 -->
   <link name="rotor_0">
@@ -146,20 +153,21 @@
     <axis xyz="0 0 1"/>
   </joint>
 
-  <!-- Cámara Pi -->
-  <link name="pi_camera_link"/>
-  <joint name="pi_camera_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="pi_camera_link"/>
-    <origin xyz="0 0 0" rpy="0 1.57079 0"/>
-  </joint>
+  <!-- Pi Camera -->
+<link name="pi_camera_link"/>
+<joint name="pi_camera_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="pi_camera_link"/>
+  <origin xyz="0 0 0" rpy="0 1.57079 0"/> <!-- igual que en SDF -->
+</joint>
 
-  <!-- Cámara frontal -->
-  <link name="camera_link"/>
-  <joint name="camera_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="camera_link"/>
-    <origin xyz="0.15 0 0" rpy="0 0 0"/>
-  </joint>
+<!-- Main camera -->
+<link name="camera_link"/>
+<joint name="camera_joint" type="fixed">
+  <parent link="base_link"/>
+  <child link="camera_link"/>
+  <origin xyz="0.15 0 0" rpy="0 0 0"/>
+</joint>
+
 
 </robot>

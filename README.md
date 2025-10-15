@@ -64,28 +64,14 @@ sudo ldconfig /usr/local/lib/
   sudo apt install ros-humble-ros-gzgarden
   ```
   - SLAM toolbox Package : 
-  ```
+  ```sh
   sudo apt install ros-humble-slam-toolbox
   ```
+  - Robot state publisher:
+  ```sh
+  sudo apt install ros-humble-joint-state-publisher ros-humble-joint-state-publisher-gui
+  ```
 
-
-## Installation
-
- 1. Create a new workspace folder.
-
- ```sh
- cd
- mkdir ~/imav25_ws
- mkdir ~/imav25_ws/src
- ```
-
-2. Clone px4_msgs repo
-
-```sh
-cd ~/imav25_ws/src
-git clone https://github.com/PX4/px4_msgs.git -b release/1.14
-```
-**_NOTE_** : The px4_msgs version should match the major version firmware on your PX4 SITL or your PX4 Hardware.
 ### Cloning this repository via SSH
 
 To securely clone this repository via SSH:
@@ -118,21 +104,47 @@ cat ~/.ssh/id_ed25519.pub
 #### c. Clone the repository
 
 ```sh
-cd imav25_ws/src/
-git clone git@github.com:DronKab/imav25.git
+cd 
+git clone git@github.com:DronKab/imav25_ws.git
 ```
 
-3. Build the workspace, this might take some minutes the first time.
+## Installation
+
+ 1. Clone px4_msgs repo.
+
+ ```sh
+ cd ~/imav25_ws/src
+ git clone https://github.com/PX4/px4_msgs.git -b release/1.14
+ ```
+ **_NOTE_** : The px4_msgs version should match the major version firmware on your PX4 SITL or your PX4 Hardware.
+
+2. Clone imav25 repo.
+
+```sh
+cd ~/imav25_ws/src
+git git@github.com:DronKab/imav25.git
+```
+
+3. Clone rf2o_laser_odometry repo.
+```sh
+cd ~/imav25_ws/src
+git clone https://github.com/MAPIRlab/rf2o_laser_odometry.git
+```
+
+4. Build the workspace, this might take some minutes the first time.
 - First build the px4 messages package (this might take some minutes the first time)
 ```sh
 cd ~/imav25_ws
 colcon build --packages-select px4_msgs
 ```
-- Then build the imav25 package with symlink
+
+5. Then, you can build all the other packages with colcon build
 ```sh
 cd ~/imav25_ws
-colcon build --packages-select imav25 --symlink-install 
+colcon build
+source install/setup.bash
 ```
+
 
 **_NOTE_** : Don't forget to source your ros2 installation if you haven't. 
 
@@ -142,6 +154,7 @@ You can add the new package to your .bashrc after the build if it didn't fail. T
 echo "source ~/imav25_ws/install/local_setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
+
 
  ## How to run
 
