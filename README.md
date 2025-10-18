@@ -72,6 +72,19 @@ sudo ldconfig /usr/local/lib/
   sudo apt install ros-humble-joint-state-publisher ros-humble-joint-state-publisher-gui
   ```
 
+  - Navigation stack :
+  ```sh
+  sudo apt install ros-humble-navigation2
+  sudo apt install ros-humble-nav2-bringup
+  ```
+
+  - extra tools :
+  ```sh
+  sudo apt install ros-humble-rmw-cyclonedds-cpp
+  gedit ~/.bashrc #abrimos el archivo con gedit y vamos al final del archivo
+  export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp # colocamos y guardamos el archivo 
+  ```
+
 ### Cloning this repository via SSH
 
 To securely clone this repository via SSH:
@@ -157,11 +170,34 @@ source ~/.bashrc
 
 
  ## How to run
-
-1. Start your SITL/Gazebo, check *[this repo](https://github.com/DronKab/imav25_sim.git)* for that. Then, run the launch file with :
+You can run the simulation with the following commands:
 
 ```sh
 ros2 launch imav25 simulador.launch.py 
+```
+
+```sh
+ros2 launch imav25 setup.launch.py
+```
+
+```sh
+ros2 launch imav25 odometry.launch.py
+```
+
+for the generation of the map with the help of the LiDAR.
+
+```sh
+ros2 run slam_toolbox sync_slam_toolbox_node \
+  --ros-args \
+  -p scan_topic:=/scan \
+  -p base_frame:=x500_0/base_link \
+  -p odom_frame:=odom \
+  -p map_frame:=map \
+  -p use_sim_time:=True \
+  -p mode:=mapping \
+  -p minimum_laser_range:=0.1 \
+  -p queue_size:=150
+
 ```
 
 This will run px4_driver node, Aruco detection node, and UXRCE agent. Let it run in the background.

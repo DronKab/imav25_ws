@@ -33,7 +33,7 @@
 </joint>
 
 <!-- Frame del sensor dentro del lidar -->
-<link name="lidar_2d_v2">
+<link name="lidar_link/lidar_2d_v2">
   <visual>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <geometry>
@@ -44,7 +44,7 @@
 
 <joint name="lidar_2d_v2_joint" type="fixed">
   <parent link="lidar_link"/>
-  <child link="lidar_2d_v2"/>
+  <child link="lidar_link/lidar_2d_v2"/>
   <origin xyz="0 0 0.105" rpy="0 0 0"/>
 </joint>
 
