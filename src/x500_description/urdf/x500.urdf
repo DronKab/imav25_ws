@@ -9,6 +9,15 @@
     <inertia ixx="0.0217" ixy="0.0" ixz="0.0" iyy="0.0217" iyz="0.0" izz="0.04"/>
   </inertial>
 
+   <!-- Frame corregido para la orientación del dron -->
+  <link name="base_corrected" />
+
+  <joint name="base_rotation_correction" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_corrected"/>
+    <origin xyz="0 0 0" rpy="0 0 3.141592654"/> <!-- Gira 180° sobre Z -->
+  </joint>
+
   <visual name="base_link_visual">
     <origin xyz="0 0 0.025" rpy="0 0 3.141592654"/>
     <geometry>
