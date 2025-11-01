@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<robot name="drone">
+
+  <!-- ============================= -->
+  <!-- Base link (centro de masa del dron) -->
+  <!-- ============================= -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.3 0.3 0.1"/>  <!-- Caja simple para visualizar -->
+      </geometry>
+      <material name="gray">
+        <color rgba="0.6 0.6 0.6 1.0"/>
+      </material>
+    </visual>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.01" iyy="0.01" izz="0.02" ixy="0.0" ixz="0.0" iyz="0.0"/>
+    </inertial>
+  </link>
+
+  <!-- ============================= -->
+  <!-- LiDAR link -->
+  <!-- ============================= -->
+  <link name="lidar_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.04"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="blue">
+        <color rgba="0.0 0.5 1.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.04"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <!-- ============================= -->
+  <!-- Joint between base_link and lidar_link -->
+  <!-- ============================= -->
+  <joint name="base_to_lidar" type="fixed">
+    <!-- El LiDAR está -0.10 m en X y +0.10 m en Z respecto al centro de masa -->
+    <origin xyz="-0.10 0.0 0.10" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+  </joint>
+
+</robot>
