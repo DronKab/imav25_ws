@@ -1,0 +1,18 @@
+# Archivo: ~/imav25_ws/src/loki_config/config/slam_params.yaml
+
+slam_toolbox:
+  ros__parameters:
+    # 1. Parámetros de Frame ID y Tópicos (para el modo síncrono que usas)
+    scan_topic: /scan
+    base_frame: base_link
+    odom_frame: odom
+    map_frame: map
+
+    # 2. Parámetros de Rendimiento y Rango
+    use_sim_time: false
+    mode: mapping
+    queue_size: 100
+
+    # 🌟 CORRECCIÓN DE LA ADVERTENCIA 🌟
+    minimum_laser_range: 0.02
+    maximum_laser_range: 12.0  # ¡Ajustado al límite real del LD06!
