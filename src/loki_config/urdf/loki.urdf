@@ -45,8 +45,8 @@
   <!-- Joint between base_link and lidar_link -->
   <!-- ============================= -->
   <joint name="base_to_lidar" type="fixed">
-    <!-- El LiDAR está -0.10 m en X y +0.10 m en Z respecto al centro de masa -->
-    <origin xyz="-0.10 0.0 0.10" rpy="0 0 0"/>
+    <!-- LiDAR centrado y rotado 180° sobre eje X -->
+    <origin xyz="0 0 0.10" rpy="3.1416 0 0"/>
     <parent link="base_link"/>
     <child link="lidar_link"/>
   </joint>
