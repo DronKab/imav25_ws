@@ -1,117 +1,122 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, OpaqueFunction
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node, ComposableNodeContainer
-from launch_ros.descriptions import ComposableNode
+from launch_ros.actions import Node
 
-
-def launch_setup(context, *args, **kwargs):
+def generate_launch_description():
     # =================================================================
-    # 1. RUTAS Y CONFIGURACIONES BASE
+    # 1. PARÁMETROS GENERALES DEL ROBOT (URDF)
     # =================================================================
+    
+    # Obtener ruta al paquete y al URDF
     pkg_path = get_package_share_directory('loki_config')
     urdf_file = os.path.join(pkg_path, 'urdf', 'loki.urdf')
-    depthai_prefix = get_package_share_directory("depthai_ros_driver")
 
-    params_file = os.path.join(depthai_prefix, "config", "driver.yaml")
-
-    parameters=[os.path.join(
-    get_package_share_directory('depthai_ros_driver'),
-    'config', 'driver.yaml')]
+    # Argumento para el URDF
+    urdf_arg = DeclareLaunchArgument(
+        'model',
+        default_value=urdf_file,
+        description='Ruta al archivo URDF del robot'
+    )
+    
+    # =================================================================
+    # 2. PARÁMETROS ESPECÍFICOS DEL LIDAR LD06
+    # =================================================================
+    
+    lidar_serial_port_arg = DeclareLaunchArgument(
+        name='serial_port', 
+        default_value='/dev/ttyUSB0',
+        description='LD06 Serial Port'
+    )
+    lidar_topic_name_arg = DeclareLaunchArgument(
+        name='topic_name', 
+        default_value='scan',
+        description='LD06 Topic Name'
+    )
+    lidar_frame_arg = DeclareLaunchArgument(
+        name='lidar_frame', 
+        default_value='lidar_link',
+        description='Lidar Frame ID'
+    )
+    lidar_range_threshold_arg = DeclareLaunchArgument(
+        name='range_threshold', 
+        default_value='0.005',
+        description='Range Threshold'
+    )
 
     # =================================================================
-    # 2. NODOS DEL ROBOT Y SENSORES
+    # 3. DEFINICIÓN DE NODOS
     # =================================================================
-
-    # Publica el modelo URDF
+    
+    # NODO: robot_state_publisher (Publica el modelo URDF)
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
         output='screen',
         parameters=[{'use_sim_time': False}],
-        arguments=[urdf_file]
+        arguments=[LaunchConfiguration('model')]
     )
 
-    # Nodo del LiDAR LD06
+    # NODO: ldlidar (Controlador del LiDAR LD06)
     ldlidar_node = Node(
         package='ldlidar',
         executable='ldlidar',
         name='ldlidar',
         output='screen',
         parameters=[
-            {'serial_port': '/dev/ttyUSB0'},
-            {'topic_name': 'scan'},
-            {'lidar_frame': 'lidar_link'},
-            {'range_threshold': 0.005}
+            {'serial_port': LaunchConfiguration("serial_port")},
+            {'topic_name': LaunchConfiguration("topic_name")},
+            {'lidar_frame': LaunchConfiguration("lidar_frame")},
+            {'range_threshold': LaunchConfiguration("range_threshold")}
         ]
     )
-
-    # Nodo de odometría RF2O
+    
+    # 🆕 NODO: rf2o_laser_odometry (Odometría a partir del LiDAR)
     rf2o_odometry_node = Node(
         package='rf2o_laser_odometry',
         executable='rf2o_laser_odometry_node',
         name='rf2o_laser_odometry',
         output='screen',
         parameters=[{
-            'laser_scan_topic': 'scan',
+            # El tópico de entrada debe coincidir con la salida del ldlidar_node
+            'laser_scan_topic': LaunchConfiguration("topic_name"), # Usamos el argumento 'scan'
             'odom_topic': '/odom',
             'publish_tf': True,
-            'base_frame_id': 'base_link',
+            # Asegúrate de que 'base_link' y 'odom' coincidan con tu configuración
+            'base_frame_id': 'base_link', 
             'odom_frame_id': 'odom',
-            'freq': 10.0
-        }]
+            'init_pose_from_topic': '',
+            'freq': 10.0}],
     )
 
-    # =================================================================
-    # 3. COMUNICACIÓN PX4
-    # =================================================================
-    microxrce_agent = ExecuteProcess(
-        cmd=["MicroXRCEAgent", "serial", "--dev", "/dev/serial0", "-b", "921600"],
-        output="log"
-    )
-
-    px4_driver_node = Node(
-        package="imav25",
-        executable="px4_driver",
-        output="screen"
-    )
 
     # =================================================================
-    # 4. CÁMARAS
+    # 4. DEVOLVER DESCRIPCIÓN DEL LAUNCH
     # =================================================================
+    
+    return LaunchDescription([
+        # 4.1. Argumentos del URDF
+        urdf_arg,
+        
+        # 4.2. Argumentos del LiDAR
+        lidar_serial_port_arg,
+        lidar_topic_name_arg,
+        lidar_frame_arg,
+        lidar_range_threshold_arg,
 
-   
-
-    # ---- Cámara USB / PiCamera ----
-    v4l2_camera_node = Node(
-        package="v4l2_camera",
-        executable="v4l2_camera_node",
-        name="v4l2_camera",
-        namespace="pi_camera",
-        output="screen",
-        parameters=[{
-            "video_device": "/dev/video2",
-            "image_size": [320, 240]
-        }]
-    )
-
-    # =================================================================
-    # 5. DEVOLVER DESCRIPCIÓN COMPLETA
-    # =================================================================
-    return [
+        # 4.3. Nodos
         robot_state_publisher_node,
         ldlidar_node,
-        rf2o_odometry_node,
-        microxrce_agent,
-        px4_driver_node,
-        v4l2_camera_node
-    ]
-
-
-def generate_launch_description():
-    return LaunchDescription([
-        OpaqueFunction(function=launch_setup)
+        rf2o_odometry_node,  # 🚀 Nuevo nodo de Odometría
+        
+        # Puedes incluir joint_state_publisher_gui_node si lo necesitas para depuración
+        # Node(
+        #     package='joint_state_publisher_gui',
+        #     executable='joint_state_publisher_gui',
+        #     name='joint_state_publisher_gui',
+        #     output='screen'
+        # )
     ])
