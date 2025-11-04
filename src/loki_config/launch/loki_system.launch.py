@@ -17,6 +17,10 @@ def launch_setup(context, *args, **kwargs):
 
     params_file = os.path.join(depthai_prefix, "config", "driver.yaml")
 
+    parameters=[os.path.join(
+    get_package_share_directory('depthai_ros_driver'),
+    'config', 'driver.yaml')]
+
     # =================================================================
     # 2. NODOS DEL ROBOT Y SENSORES
     # =================================================================
@@ -79,34 +83,7 @@ def launch_setup(context, *args, **kwargs):
     # 4. CÁMARAS
     # =================================================================
 
-    # ---- Cámara OAK-D Lite ----
-    oak_container = ComposableNodeContainer(
-        name="oak_container",
-        namespace="oak",
-        package="rclcpp_components",
-        executable="component_container",
-        composable_node_descriptions=[
-            ComposableNode(
-                package="depthai_ros_driver",
-                plugin="depthai_ros_driver::Driver",
-                name="oak",
-                parameters=[
-                    params_file,
-                    {
-                        "i_publish_tf_from_calibration": True,
-                        "i_tf_camera_model": "OAK-D-LITE",
-                        "i_tf_base_frame": "oak",
-                        "i_tf_parent_frame": "base_link",
-                        "i_tf_cam_pos_x": 0.05,
-                        "i_tf_cam_pos_y": 0.0,
-                        "i_tf_cam_pos_z": 0.1,
-                    }
-                ],
-            )
-        ],
-        arguments=["--ros-args", "--log-level", "info"],
-        output="both",
-    )
+   
 
     # ---- Cámara USB / PiCamera ----
     v4l2_camera_node = Node(
@@ -130,7 +107,6 @@ def launch_setup(context, *args, **kwargs):
         rf2o_odometry_node,
         microxrce_agent,
         px4_driver_node,
-        oak_container,
         v4l2_camera_node
     ]
 

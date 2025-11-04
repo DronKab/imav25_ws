@@ -1,0 +1,10 @@
+camera:
+  i_nn_type: "none"
+  i_enable_nn: false
+  i_enable_spatial_nn: false
+  i_enable_depth: false
+  i_enable_imu: false
+  i_publish_tf_from_calibration: false
+  i_resolution_rgb: "1080P"
+  i_fps: 30.0
+  camera_name: "oak1_rgb"

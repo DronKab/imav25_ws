@@ -1,0 +1,20 @@
+camera:
+  i_enable_imu: false
+  i_enable_depth: false
+  i_publish_tf_from_calibration: false
+  i_enable_rviz: false
+  i_usb_port_id: ""
+  i_pipeline_type: rgb
+  i_resolution_rgb: '1080P'
+  i_resolution_left: '400P'
+  i_resolution_right: '400P'
+  i_fps: 30.0
+  # Nombre base de la cámara
+  camera_name: oakd_lite_1
+
+  # ======== CONFIGURACIÓN DE RED NEURONAL ========
+  i_nn_type: false  # spatial, detection, o segmentation
+  i_nn_config_path: /home/andres/imav25_ws/src/loki_config/config/nn/mobilenet.blob
+  i_enable_nn: true
+  i_enable_spatial_nn: false
+  i_nn_manager_namespace: nn_manager
